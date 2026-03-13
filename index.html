@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ConvertHub — Free Online File Converter</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; background: #ffffff; color: #111111; font-size: 15px; line-height: 1.5; }
+
+/* HEADER */
+header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 200; }
+.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo-icon { width: 40px; height: 40px; background: #e84545; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.logo-text { font-size: 22px; font-weight: 800; color: #111111; letter-spacing: -0.5px; }
+.logo-text span { color: #e84545; }
+nav { display: flex; align-items: center; gap: 6px; }
+.nav-btn { padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; background: transparent; color: #444444; font-family: ‘Inter’, sans-serif; transition: background 0.15s; }
+.nav-btn:hover { background: #f3f4f6; color: #111; }
+.nav-btn.primary { background: #e84545; color: #fff; padding: 8px 20px; }
+.nav-btn.primary:hover { background: #cc3333; }
+
+/* HERO */
+.hero { background: #fff9f9; padding: 60px 32px 52px; text-align: center; border-bottom: 1px solid #e5e7eb; }
+.hero h1 { font-size: 40px; font-weight: 800; color: #111111; letter-spacing: -1px; line-height: 1.2; margin-bottom: 14px; }
+.hero h1 span { color: #e84545; }
+.hero p { font-size: 17px; color: #555555; max-width: 520px; margin: 0 auto 28px; line-height: 1.7; }
+.hero-badges { display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; }
+.badge { display: flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 600; color: #333333; }
+.badge-dot { width: 8px; height: 8px; border-radius: 50%; background: #e84545; }
+
+/* TABS */
+.tabs { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 0 32px; display: flex; overflow-x: auto; }
+.tab { padding: 15px 20px; font-size: 14px; font-weight: 600; color: #555555; cursor: pointer; border: none; background: none; border-bottom: 3px solid transparent; white-space: nowrap; font-family: ‘Inter’, sans-serif; transition: color 0.15s, border-color 0.15s; }
+.tab:hover { color: #111111; }
+.tab.active { color: #e84545; border-bottom-color: #e84545; }
+
+/* MAIN */
+.main { max-width: 1100px; margin: 0 auto; padding: 44px 32px 80px; }
+.sec-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #e84545; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+.sec-label::after { content: ‘’; flex: 1; height: 1px; background: #e5e7eb; }
+
+/* CARDS */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; margin-bottom: 48px; }
+.card { background: #fff; border: 1.5px solid #e5e7eb; border-radius: 14px; padding: 22px 18px 18px; cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s; text-align: center; }
+.card:hover { border-color: var(–c, #e84545); box-shadow: 0 6px 20px rgba(0,0,0,0.07); transform: translateY(-3px); }
+.card-icon { width: 58px; height: 58px; border-radius: 14px; background: var(–bg, #ffeaea); display: flex; align-items: center; justify-content: center; margin: 0 auto 13px; font-size: 26px; }
+.card-name { font-size: 14px; font-weight: 700; color: #111111; line-height: 1.3; margin-bottom: 5px; }
+.card-desc { font-size: 12px; color: #666666; line-height: 1.5; }
+
+/* MODAL */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; align-items: center; justify-content: center; padding: 16px; }
+.overlay.open { display: flex; }
+.modal { background: #fff; border-radius: 20px; width: 100%; max-width: 540px; max-height: 90vh; overflow-y: auto; animation: pop 0.25s cubic-bezier(.34,1.56,.64,1); }
+@keyframes pop { from { transform: scale(0.9); opacity: 0; } }
+.modal-top { padding: 26px 26px 0; display: flex; align-items: flex-start; justify-content: space-between; }
+.modal-left { display: flex; align-items: center; gap: 14px; }
+.modal-ico { width: 50px; height: 50px; border-radius: 12px; background: var(–bg, #ffeaea); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+.modal-title { font-size: 20px; font-weight: 800; color: #111111; }
+.modal-sub { font-size: 13px; color: #666666; margin-top: 3px; }
+.modal-x { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid #ddd; background: none; cursor: pointer; font-size: 15px; color: #666; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
+.modal-x:hover { background: #f3f4f6; color: #111; }
+.mbody { padding: 22px 26px 26px; }
+
+/* DROP ZONE */
+.dz { border: 2px dashed #d1d5db; border-radius: 12px; padding: 36px 20px; text-align: center; cursor: pointer; position: relative; background: #fafafa; transition: all 0.2s; }
+.dz:hover, .dz.drag { border-color: #e84545; background: #fff5f5; }
+.dz input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+.dz-ico { font-size: 32px; margin-bottom: 8px; }
+.dz-title { font-size: 15px; font-weight: 700; color: #111111; margin-bottom: 4px; }
+.dz-hint { font-size: 13px; color: #777777; }
+.dz-hint b { color: #e84545; }
+
+/* FILE LIST */
+.flist { display: flex; flex-direction: column; gap: 7px; margin: 12px 0; }
+.frow { display: flex; align-items: center; gap: 10px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 9px; padding: 9px 12px; }
+.fbadge { background: #e84545; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 5px; flex-shrink: 0; min-width: 36px; text-align: center; }
+.fname { font-size: 13px; font-weight: 600; color: #111111; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fsize { font-size: 12px; color: #888888; flex-shrink: 0; }
+.frm { background: none; border: none; color: #cccccc; cursor: pointer; font-size: 16px; padding: 2px; transition: color 0.15s; }
+.frm:hover { color: #e84545; }
+
+/* FORMAT PILLS */
+.fmt-sec { margin: 16px 0; }
+.fmt-lbl { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #888888; margin-bottom: 8px; }
+.pills { display: flex; gap: 7px; flex-wrap: wrap; }
+.pill { padding: 7px 15px; border-radius: 8px; border: 1.5px solid #e5e7eb; font-size: 13px; font-weight: 600; cursor: pointer; background: #fff; color: #444444; font-family: ‘Inter’, sans-serif; transition: all 0.15s; }
+.pill:hover { border-color: #e84545; color: #e84545; }
+.pill.on { background: #e84545; color: #fff; border-color: #e84545; }
+
+/* INPUTS */
+.irow { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
+.ig label { display: block; font-size: 12px; font-weight: 600; color: #555555; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+.ig input { width: 100%; border: 1.5px solid #e5e7eb; border-radius: 8px; padding: 9px 12px; font-family: ‘Inter’, sans-serif; font-size: 14px; color: #111111; outline: none; transition: border-color 0.15s; }
+.ig input:focus { border-color: #e84545; }
+.htxt { width: 100%; height: 130px; border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 12px; font-family: monospace; font-size: 13px; color: #111111; resize: vertical; outline: none; margin: 12px 0; }
+.htxt:focus { border-color: #e84545; }
+
+/* PROGRESS */
+.prog { margin: 12px 0; display: none; }
+.prog-track { height: 6px; background: #f3f4f6; border-radius: 99px; overflow: hidden; }
+.prog-fill { height: 100%; background: #e84545; border-radius: 99px; transition: width 0.35s; width: 0%; }
+.prog-msg { font-size: 12px; color: #888888; margin-top: 5px; }
+
+/* BUTTON */
+.cvt-btn { width: 100%; padding: 13px; background: #e84545; color: #fff; border: none; border-radius: 11px; font-family: ‘Inter’, sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 6px; transition: background 0.2s, transform 0.15s; }
+.cvt-btn:hover:not(:disabled) { background: #cc3333; transform: translateY(-1px); }
+.cvt-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* RESULT */
+.result { display: none; margin-top: 14px; background: #f0fdf4; border: 1.5px solid #22c55e; border-radius: 12px; padding: 18px; text-align: center; }
+.result.show { display: block; }
+.result-emoji { font-size: 28px; margin-bottom: 6px; }
+.result-title { font-size: 16px; font-weight: 700; color: #111111; margin-bottom: 3px; }
+.result-note { font-size: 13px; color: #555555; margin-bottom: 14px; }
+.dl { display: inline-flex; align-items: center; gap: 7px; background: #16a34a; color: #fff; padding: 10px 26px; border-radius: 9px; font-size: 14px; font-weight: 700; text-decoration: none; font-family: ‘Inter’, sans-serif; transition: background 0.15s; }
+.dl:hover { background: #15803d; }
+
+/* FEATURES */
+.feats { background: #f9fafb; border-top: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb; padding: 40px 32px; }
+.feats-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 28px; }
+.feat { display: flex; align-items: flex-start; gap: 14px; }
+.feat-ico { width: 44px; height: 44px; background: #ffeaea; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.feat-name { font-size: 15px; font-weight: 700; color: #111111; margin-bottom: 4px; }
+.feat-desc { font-size: 13px; color: #555555; line-height: 1.5; }
+
+/* FOOTER */
+footer { background: #111827; padding: 32px; }
+.footer-in { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.foot-logo { font-size: 20px; font-weight: 800; color: #fff; }
+.foot-logo span { color: #e84545; }
+.foot-note { font-size: 13px; color: #9ca3af; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 24px; right: 24px; background: #111111; color: #fff; padding: 12px 18px; border-radius: 10px; font-size: 14px; font-weight: 600; z-index: 9999; display: flex; align-items: center; gap: 8px; transform: translateY(60px); opacity: 0; transition: all 0.3s cubic-bezier(.34,1.56,.64,1); box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+.toast.show { transform: translateY(0); opacity: 1; }
+
+@media (max-width: 640px) {
+header { padding: 0 16px; } .hero { padding: 36px 16px; } .hero h1 { font-size: 28px; }
+.tabs { padding: 0 16px; } .main { padding: 28px 16px 60px; } .feats { padding: 28px 16px; }
+nav .nav-btn:not(.primary) { display: none; }
+}
+</style>
+
+</head>
+<body>
+
+<header>
+  <a class="logo" href="#">
+    <div class="logo-icon">📄</div>
+    <div class="logo-text">Convert<span>Hub</span></div>
+  </a>
+  <nav>
+    <button class="nav-btn" onclick="scrollTo('pdf-sec')">PDF Tools</button>
+    <button class="nav-btn" onclick="scrollTo('img-sec')">Image Tools</button>
+    <button class="nav-btn" onclick="scrollTo('doc-sec')">Documents</button>
+    <button class="nav-btn primary">100% Free</button>
+  </nav>
+</header>
+
+<div class="hero">
+  <h1>Every file converter you need,<br><span>completely free</span></h1>
+  <p>Convert PDFs, Word docs, Excel files, images and more — instantly in your browser. No signup, no limits.</p>
+  <div class="hero-badges">
+    <div class="badge"><div class="badge-dot"></div>100% Free</div>
+    <div class="badge"><div class="badge-dot"></div>No file uploads</div>
+    <div class="badge"><div class="badge-dot"></div>Works on any device</div>
+    <div class="badge"><div class="badge-dot"></div>No account needed</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="filter('all',this)">All Tools</button>
+  <button class="tab" onclick="filter('pdf',this)">PDF</button>
+  <button class="tab" onclick="filter('image',this)">Images</button>
+  <button class="tab" onclick="filter('docs',this)">Documents</button>
+</div>
+
+<div class="main">
+
+  <div class="tool-sec" id="pdf-sec" data-cat="pdf">
+    <div class="sec-label">PDF Tools</div>
+    <div class="grid">
+      <div class="card" style="--c:#e84545;--bg:#ffeaea" onclick="openTool('pdf-to-word')"><div class="card-icon">📄</div><div class="card-name">PDF to Word</div><div class="card-desc">Extract text from PDF into an editable document</div></div>
+      <div class="card" style="--c:#2563eb;--bg:#eff6ff" onclick="openTool('word-to-pdf')"><div class="card-icon">📝</div><div class="card-name">Word to PDF</div><div class="card-desc">Convert Word or text files to PDF format</div></div>
+      <div class="card" style="--c:#16a34a;--bg:#f0fdf4" onclick="openTool('pdf-to-excel')"><div class="card-icon">📊</div><div class="card-name">PDF to Excel</div><div class="card-desc">Extract PDF data into a CSV spreadsheet</div></div>
+      <div class="card" style="--c:#d97706;--bg:#fffbeb" onclick="openTool('excel-to-pdf')"><div class="card-icon">🗂️</div><div class="card-name">Excel to PDF</div><div class="card-desc">Convert CSV or spreadsheet files to PDF</div></div>
+      <div class="card" style="--c:#7c3aed;--bg:#f5f3ff" onclick="openTool('pdf-to-ppt')"><div class="card-icon">🖼️</div><div class="card-name">PDF to Images</div><div class="card-desc">Export each PDF page as a PNG image</div></div>
+      <div class="card" style="--c:#db2777;--bg:#fdf2f8" onclick="openTool('imgs-to-pdf')"><div class="card-icon">📑</div><div class="card-name">Images to PDF</div><div class="card-desc">Combine multiple images into one PDF</div></div>
+      <div class="card" style="--c:#0891b2;--bg:#ecfeff" onclick="openTool('merge-pdf')"><div class="card-icon">📎</div><div class="card-name">Merge PDFs</div><div class="card-desc">Combine multiple PDF files into one</div></div>
+      <div class="card" style="--c:#65a30d;--bg:#f7fee7" onclick="openTool('compress-pdf')"><div class="card-icon">🗜️</div><div class="card-name">Compress PDF</div><div class="card-desc">Reduce PDF file size for easy sharing</div></div>
+    </div>
+  </div>
+
+  <div class="tool-sec" id="img-sec" data-cat="image">
+    <div class="sec-label">Image Tools</div>
+    <div class="grid">
+      <div class="card" style="--c:#d97706;--bg:#fffbeb" onclick="openTool('img-convert')"><div class="card-icon">🔄</div><div class="card-name">Convert Image</div><div class="card-desc">JPG, PNG, WebP, BMP — convert any format</div></div>
+      <div class="card" style="--c:#7c3aed;--bg:#f5f3ff" onclick="openTool('img-resize')"><div class="card-icon">↔️</div><div class="card-name">Resize Image</div><div class="card-desc">Resize to exact pixel dimensions</div></div>
+      <div class="card" style="--c:#16a34a;--bg:#f0fdf4" onclick="openTool('img-compress')"><div class="card-icon">🗜️</div><div class="card-name">Compress Image</div><div class="card-desc">Reduce file size, keep the quality</div></div>
+      <div class="card" style="--c:#db2777;--bg:#fdf2f8" onclick="openTool('img-rotate')"><div class="card-icon">✂️</div><div class="card-name">Rotate & Flip</div><div class="card-desc">Rotate 90°/180° or flip horizontally</div></div>
+      <div class="card" style="--c:#374151;--bg:#f3f4f6" onclick="openTool('img-bw')"><div class="card-icon">⚫</div><div class="card-name">Grayscale / B&W</div><div class="card-desc">Convert colour photo to grayscale or B&W</div></div>
+      <div class="card" style="--c:#0891b2;--bg:#ecfeff" onclick="openTool('svg-png')"><div class="card-icon">📐</div><div class="card-name">SVG to PNG/JPG</div><div class="card-desc">Rasterize SVG vector files to PNG or JPG</div></div>
+    </div>
+  </div>
+
+  <div class="tool-sec" id="doc-sec" data-cat="docs">
+    <div class="sec-label">Document Tools</div>
+    <div class="grid">
+      <div class="card" style="--c:#e84545;--bg:#ffeaea" onclick="openTool('txt-pdf')"><div class="card-icon">📝</div><div class="card-name">Text to PDF</div><div class="card-desc">Convert plain .txt files to PDF</div></div>
+      <div class="card" style="--c:#2563eb;--bg:#eff6ff" onclick="openTool('csv-pdf')"><div class="card-icon">📋</div><div class="card-name">CSV to PDF</div><div class="card-desc">Render CSV data as a table in PDF</div></div>
+      <div class="card" style="--c:#16a34a;--bg:#f0fdf4" onclick="openTool('md-pdf')"><div class="card-icon">📑</div><div class="card-name">Markdown to PDF</div><div class="card-desc">Render Markdown files as formatted PDF</div></div>
+      <div class="card" style="--c:#d97706;--bg:#fffbeb" onclick="openTool('html-pdf')"><div class="card-icon">🌐</div><div class="card-name">HTML to PDF</div><div class="card-desc">Paste HTML code and download as PDF</div></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="feats">
+  <div class="feats-inner">
+    <div class="feat"><div class="feat-ico">🔒</div><div><div class="feat-name">100% Private</div><div class="feat-desc">Files never leave your device. All conversions happen locally in your browser.</div></div></div>
+    <div class="feat"><div class="feat-ico">⚡</div><div><div class="feat-name">Instant Results</div><div class="feat-desc">No waiting, no queues. Files convert in seconds, right here.</div></div></div>
+    <div class="feat"><div class="feat-ico">🆓</div><div><div class="feat-name">Always Free</div><div class="feat-desc">No subscriptions, no paywalls. Every tool is completely free to use.</div></div></div>
+    <div class="feat"><div class="feat-ico">📱</div><div><div class="feat-name">Works Everywhere</div><div class="feat-desc">Desktop, tablet, or phone — works on any browser, any device.</div></div></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-in">
+    <div class="foot-logo">Convert<span>Hub</span></div>
+    <div class="foot-note">© 2026 ConvertHub · Your files stay on your device · Always free</div>
+  </div>
+</footer>
+
+<!-- MODAL -->
+
+<div class="overlay" id="ov" onclick="ovClick(event)">
+  <div class="modal" id="modal">
+    <div class="modal-top">
+      <div class="modal-left">
+        <div class="modal-ico" id="mIco">📄</div>
+        <div><div class="modal-title" id="mTitle">Convert</div><div class="modal-sub" id="mSub"></div></div>
+      </div>
+      <button class="modal-x" onclick="closeModal()">✕</button>
+    </div>
+    <div class="mbody" id="mbody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const T = {
+  'pdf-to-word':  {title:'PDF to Word',       sub:'Extract text from PDF into a .txt file',           ico:'📄', bg:'#ffeaea', accept:'.pdf',      fn:pdfToWord},
+  'word-to-pdf':  {title:'Word to PDF',        sub:'Convert a text file into PDF',                     ico:'📝', bg:'#eff6ff', accept:'.txt',       fn:wordToPdf},
+  'pdf-to-excel': {title:'PDF to Excel',       sub:'Extract PDF content into a CSV file',              ico:'📊', bg:'#f0fdf4', accept:'.pdf',       fn:pdfToExcel},
+  'excel-to-pdf': {title:'Excel / CSV to PDF', sub:'Convert CSV data into a formatted PDF table',      ico:'🗂️', bg:'#fffbeb', accept:'.csv,.txt',  fn:csvToPdf},
+  'pdf-to-ppt':   {title:'PDF to Images',      sub:'Export each PDF page as a PNG image file',         ico:'🖼️', bg:'#f5f3ff', accept:'.pdf',       fn:pdfToImgs},
+  'imgs-to-pdf':  {title:'Images to PDF',      sub:'Combine images into one PDF',                      ico:'📑', bg:'#fdf2f8', accept:'image/*',    fn:imgsToPdf, multi:true},
+  'merge-pdf':    {title:'Merge PDFs',         sub:'Combine multiple PDFs into one document',          ico:'📎', bg:'#ecfeff', accept:'.pdf',       fn:mergePdfs, multi:true},
+  'compress-pdf': {title:'Compress PDF',       sub:'Reduce PDF file size',                              ico:'🗜️', bg:'#f7fee7', accept:'.pdf',       fn:compressPdf},
+  'img-convert':  {title:'Convert Image',      sub:'Convert between JPG, PNG, WebP, BMP',              ico:'🔄', bg:'#fffbeb', accept:'image/*',    fn:convertImg, fmts:['JPG','PNG','WebP','BMP'], multi:true},
+  'img-resize':   {title:'Resize Image',       sub:'Resize to exact pixel dimensions',                  ico:'↔️', bg:'#f5f3ff', accept:'image/*',    fn:resizeImg, extra:'resize'},
+  'img-compress': {title:'Compress Image',     sub:'Reduce image file size',                            ico:'🗜️', bg:'#f0fdf4', accept:'image/*',    fn:compressImg, fmts:['JPG high quality','JPG medium','JPG small','PNG'], multi:true},
+  'img-rotate':   {title:'Rotate & Flip',      sub:'Rotate or flip your image',                        ico:'✂️', bg:'#fdf2f8', accept:'image/*',    fn:rotateImg, extra:'rotate'},
+  'img-bw':       {title:'Grayscale / B&W',    sub:'Convert to grayscale or black & white',             ico:'⚫', bg:'#f3f4f6', accept:'image/*',    fn:bwImg, fmts:['Grayscale','Black & White'], multi:true},
+  'svg-png':      {title:'SVG to PNG/JPG',     sub:'Rasterize SVG to PNG or JPG',                      ico:'📐', bg:'#ecfeff', accept:'.svg',       fn:svgConvert, fmts:['PNG','JPG'], multi:true},
+  'txt-pdf':      {title:'Text to PDF',        sub:'Convert a plain text file to PDF',                 ico:'📝', bg:'#ffeaea', accept:'.txt',       fn:txtToPdf},
+  'csv-pdf':      {title:'CSV to PDF',         sub:'Render CSV data as a table PDF',                   ico:'📋', bg:'#eff6ff', accept:'.csv',       fn:csvToPdf},
+  'md-pdf':       {title:'Markdown to PDF',    sub:'Render Markdown files as formatted PDF',           ico:'📑', bg:'#f0fdf4', accept:'.md,.txt',   fn:mdToPdf},
+  'html-pdf':     {title:'HTML to PDF',        sub:'Paste HTML and download as PDF',                   ico:'🌐', bg:'#fffbeb', accept:null,         fn:htmlToPdf, extra:'html'},
+};
+
+let files=[], fmt='', tid='';
+
+function scrollTo(id){ document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'}); }
+
+function filter(cat, btn){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
+  document.querySelectorAll('.tool-sec').forEach(s=>{ s.style.display=(cat==='all'||s.dataset.cat===cat)?'':'none'; });
+}
+
+function openTool(id){
+  tid=id; files=[]; const t=T[id];
+  fmt=t.fmts?t.fmts[0]:'';
+  const mi=document.getElementById('mIco'); mi.textContent=t.ico; mi.style.background=t.bg;
+  document.getElementById('mTitle').textContent=t.title;
+  document.getElementById('mSub').textContent=t.sub;
+  document.getElementById('mbody').innerHTML=buildModal(t,id);
+  document.getElementById('ov').classList.add('open');
+}
+
+function buildModal(t,id){
+  let h='';
+  if(t.extra==='html'){
+    h+=`<div style="font-size:12px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Paste HTML code</div>
+    <textarea class="htxt" id="hIn" placeholder="<h1>Title</h1><p>Your content...</p>"></textarea>`;
+
+} else if(t.accept){
+h+=`<div class="dz" id="dz" ondragover="doDrag(event)" ondragleave="doLeave()" ondrop="doDrop(event)"> <input type="file" id="fi" accept="${t.accept}" ${t.multi?'multiple':''} onchange="addF(this.files)"> <div class="dz-ico">${t.ico}</div> <div class="dz-title">Click to browse or drag & drop</div> <div class="dz-hint">Accepted formats: <b>${t.accept.replace(/\./g,'').toUpperCase()}</b></div> </div> <div class="flist" id="fl"></div>`;
+}
+if(t.extra===‘resize’){
+h+=`<div class="irow"><div class="ig"><label>Width (px)</label><input type="number" id="rW" placeholder="e.g. 800"></div><div class="ig"><label>Height (px)</label><input type="number" id="rH" placeholder="e.g. 600"></div></div>`;
+}
+if(t.extra===‘rotate’){
+const opts=[‘Rotate 90°’,‘Rotate 180°’,‘Rotate 270°’,‘Flip Horizontal’,‘Flip Vertical’];
+fmt=opts[0];
+h+=`<div class="fmt-sec"><div class="fmt-lbl">Transform</div><div class="pills">${opts.map((o,i)=>`<button class="pill${i===0?' on':''}" onclick="setFmt(this,'${o}')">${o}</button>`).join('')}</div></div>`;
+}
+if(t.fmts&&t.extra!==‘rotate’){
+h+=`<div class="fmt-sec"><div class="fmt-lbl">Convert to</div><div class="pills">${t.fmts.map((f,i)=>`<button class="pill${i===0?' on':''}" onclick="setFmt(this,'${f}')">${f}</button>`).join('')}</div></div>`;
+}
+h+=`<div class="prog" id="pw"><div class="prog-track"><div class="prog-fill" id="pf"></div></div><div class="prog-msg" id="pm">Converting...</div></div>`;
+h+=`<button class="cvt-btn" id="cbtn" onclick="run('${id}')">Convert Now</button>`;
+h+=`<div class="result" id="rb"><div class="result-emoji">✅</div><div class="result-title">Conversion complete!</div><div class="result-note" id="rn"></div><a class="dl" id="dl" download>⬇ Download File</a></div>`;
+return h;
+}
+
+function setFmt(btn,f){ fmt=f; btn.closest(’.pills’).querySelectorAll(’.pill’).forEach(b=>b.classList.remove(‘on’)); btn.classList.add(‘on’); }
+function addF(fl){ files=[…files,…Array.from(fl)]; renderF(); }
+function renderF(){ const el=document.getElementById(‘fl’); if(!el)return; el.innerHTML=files.map((f,i)=>`<div class="frow"><div class="fbadge">${f.name.split('.').pop().toUpperCase().slice(0,4)}</div><div class="fname">${f.name}</div><div class="fsize">${(f.size/1024).toFixed(0)} KB</div><button class="frm" onclick="rmF(${i})">✕</button></div>`).join(’’); }
+function rmF(i){ files.splice(i,1); renderF(); }
+function doDrag(e){ e.preventDefault(); document.getElementById(‘dz’)?.classList.add(‘drag’); }
+function doLeave(){ document.getElementById(‘dz’)?.classList.remove(‘drag’); }
+function doDrop(e){ e.preventDefault(); doLeave(); addF(e.dataTransfer.files); }
+function prog(p,m){ const w=document.getElementById(‘pw’),f=document.getElementById(‘pf’),ms=document.getElementById(‘pm’); if(w){w.style.display=‘block’;f.style.width=p+’%’;if(m)ms.textContent=m;} }
+function showRes(url,name,note=’’){ document.getElementById(‘pw’).style.display=‘none’; const rb=document.getElementById(‘rb’); rb.classList.add(‘show’); document.getElementById(‘rn’).textContent=note||‘Your file is ready to download’; const dl=document.getElementById(‘dl’); dl.href=url; dl.download=name; document.getElementById(‘cbtn’).disabled=false; }
+function toast(msg,ok=true){ const t=document.getElementById(‘toast’); t.innerHTML=`<span>${ok?'✅':'❌'}</span><span>${msg}</span>`; t.classList.add(‘show’); setTimeout(()=>t.classList.remove(‘show’),3000); }
+function closeModal(){ document.getElementById(‘ov’).classList.remove(‘open’); files=[]; }
+function ovClick(e){ if(e.target===document.getElementById(‘ov’))closeModal(); }
+document.addEventListener(‘keydown’,e=>{ if(e.key===‘Escape’)closeModal(); });
+
+async function run(id){ const btn=document.getElementById(‘cbtn’); btn.disabled=true; document.getElementById(‘rb’)?.classList.remove(‘show’); prog(5,‘Starting…’); try{ await T[id].fn(); } catch(e){ console.error(e); toast(e.message||‘Conversion failed’,false); btn.disabled=false; document.getElementById(‘pw’).style.display=‘none’; } }
+
+const rBuf=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsArrayBuffer(f);});
+const rTxt=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsText(f);});
+const rUrl=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsDataURL(f);});
+async function getPdfText(file){ prog(15,‘Reading PDF…’); const ab=await rBuf(file); const pdf=await pdfjsLib.getDocument({data:ab}).promise; let txt=’’; for(let i=1;i<=pdf.numPages;i++){ prog(15+(i/pdf.numPages)*65,`Reading page ${i}/${pdf.numPages}...`); const pg=await pdf.getPage(i); const ct=await pg.getTextContent(); txt+=ct.items.map(s=>s.str).join(’ ‘)+’\n\n’; } return txt; }
+const makePdf=()=>{ const {jsPDF}=window.jspdf; return new jsPDF(); };
+
+async function pdfToWord(){ if(!files[0])throw new Error(‘Select a PDF file’); const txt=await getPdfText(files[0]); prog(95,‘Saving…’); const url=URL.createObjectURL(new Blob([txt],{type:‘text/plain’})); prog(100); showRes(url,files[0].name.replace(’.pdf’,’’)+’.txt’,‘Text extracted — open in Word or any text editor’); toast(‘Done!’); }
+async function wordToPdf(){ if(!files[0])throw new Error(‘Select a file’); prog(20,‘Reading…’); const txt=await rTxt(files[0]); prog(50,‘Building PDF…’); const doc=makePdf(); const lines=doc.splitTextToSize(txt,180); let y=20; lines.forEach(l=>{if(y>280){doc.addPage();y=20;}doc.setFontSize(11);doc.text(l,15,y);y+=6;}); prog(95); const url=URL.createObjectURL(doc.output(‘blob’)); prog(100); showRes(url,files[0].name.replace(/.\w+$/,’’)+’.pdf’); toast(‘Converted!’); }
+async function pdfToExcel(){ if(!files[0])throw new Error(‘Select a PDF file’); const txt=await getPdfText(files[0]); prog(90,‘Creating CSV…’); const csv=txt.split(’\n’).map(l=>`"${l.replace(/"/g,'""')}"`).join(’\n’); const url=URL.createObjectURL(new Blob([csv],{type:‘text/csv’})); prog(100); showRes(url,files[0].name.replace(’.pdf’,’’)+’.csv’,‘Open in Excel or Google Sheets’); toast(‘Done!’); }
+async function csvToPdf(){ if(!files[0])throw new Error(‘Select a file’); prog(20,‘Reading…’); const txt=await rTxt(files[0]); const rows=txt.split(’\n’).map(r=>r.split(’,’)); prog(50,‘Building PDF…’); const {jsPDF}=window.jspdf; const doc=new jsPDF({orientation:rows[0]?.length>6?‘landscape’:‘portrait’}); let y=20; doc.setFontSize(10); rows.forEach((row,ri)=>{ if(y>270){doc.addPage();y=20;} if(ri===0){doc.setFont(undefined,‘bold’);doc.setFillColor(240,240,240);doc.rect(10,y-5,280,10,‘F’);}else doc.setFont(undefined,‘normal’); const cw=180/Math.max(row.length,1); row.forEach((c,ci)=>doc.text(String(c).substring(0,20),15+ci*cw,y)); y+=10; }); prog(95); const url=URL.createObjectURL(doc.output(‘blob’)); prog(100); showRes(url,files[0].name.replace(/.\w+$/,’’)+’.pdf’); toast(‘Converted!’); }
+async function pdfToImgs(){ if(!files[0])throw new Error(‘Select a PDF file’); prog(10,‘Loading PDF…’); const ab=await rBuf(files[0]); const pdf=await pdfjsLib.getDocument({data:ab}).promise; for(let i=1;i<=pdf.numPages;i++){ prog(10+(i/pdf.numPages)*85,`Rendering page ${i}/${pdf.numPages}...`); const pg=await pdf.getPage(i); const vp=pg.getViewport({scale:2}); const cv=document.createElement(‘canvas’); cv.width=vp.width; cv.height=vp.height; await pg.render({canvasContext:cv.getContext(‘2d’),viewport:vp}).promise; const url=cv.toDataURL(‘image/png’); if(i===1){prog(100);showRes(url,files[0].name.replace(’.pdf’,`_page1.png`),`${pdf.numPages} page(s) will download separately`);}else{const a=document.createElement(‘a’);a.href=url;a.download=files[0].name.replace(’.pdf’,`_page${i}.png`);a.click();} } toast(‘Pages exported!’); }
+async function imgsToPdf(){ if(!files.length)throw new Error(‘Select at least one image’); prog(10,‘Loading images…’); const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:‘px’}); let first=true; for(let i=0;i<files.length;i++){ prog(10+(i/files.length)*80,`Adding image ${i+1}/${files.length}...`); const du=await rUrl(files[i]); const img=new Image(); img.src=du; await new Promise(r=>img.onload=r); const pw=doc.internal.pageSize.getWidth(),ph=doc.internal.pageSize.getHeight(); const ratio=Math.min(pw/img.width,ph/img.height); const w=img.width*ratio,h=img.height*ratio; if(!first)doc.addPage(); doc.addImage(du,‘JPEG’,(pw-w)/2,(ph-h)/2,w,h); first=false; } prog(95); const url=URL.createObjectURL(doc.output(‘blob’)); prog(100); showRes(url,‘merged.pdf’,`${files.length} image(s) merged into PDF`); toast(‘Done!’); }
+async function mergePdfs(){ if(files.length<2)throw new Error(‘Select at least 2 PDF files’); const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:‘px’}); let first=true; for(let fi=0;fi<files.length;fi++){ prog(10+(fi/files.length)*80,`Processing ${files[fi].name}...`); const ab=await rBuf(files[fi]); const pdf=await pdfjsLib.getDocument({data:ab}).promise; for(let pi=1;pi<=pdf.numPages;pi++){ const pg=await pdf.getPage(pi); const vp=pg.getViewport({scale:2}); const cv=document.createElement(‘canvas’); cv.width=vp.width; cv.height=vp.height; await pg.render({canvasContext:cv.getContext(‘2d’),viewport:vp}).promise; const du=cv.toDataURL(‘image/jpeg’,0.85); const pw=doc.internal.pageSize.getWidth(),ph=doc.internal.pageSize.getHeight(); const ratio=Math.min(pw/cv.width,ph/cv.height); const w=cv.width*ratio,h=cv.height*ratio; if(!first)doc.addPage(); doc.addImage(du,‘JPEG’,(pw-w)/2,(ph-h)/2,w,h); first=false; } } prog(95); const url=URL.createObjectURL(doc.output(‘blob’)); prog(100); showRes(url,‘merged.pdf’,`${files.length} PDFs combined`); toast(‘Merged!’); }
+async function compressPdf(){ if(!files[0])throw new Error(‘Select a PDF file’); prog(10,‘Loading…’); const ab=await rBuf(files[0]); const pdf=await pdfjsLib.getDocument({data:ab}).promise; const {jsPDF}=window.jspdf; const doc=new jsPDF({unit:‘px’}); let first=true; for(let i=1;i<=pdf.numPages;i++){ prog(10+(i/pdf.numPages)*80,`Compressing page ${i}/${pdf.numPages}...`); const pg=await pdf.getPage(i); const vp=pg.getViewport({scale:1.2}); const cv=document.createElement(‘canvas’); cv.width=vp.width; cv.height=vp.height; await pg.render({canvasContext:cv.getContext(‘2d’),viewport:vp}).promise; const du=cv.toDataURL(‘image/jpeg’,0.5); const pw=doc.internal.pageSize.getWidth(),ph=doc.internal.pageSize.getHeight(); const ratio=Math.min(pw/cv.width,ph/cv.height); const w=cv.width*ratio,h=cv.height*ratio; if(!first)doc.addPage(); doc.addImage(du,‘JPEG’,(pw-w)/2,(ph-h)/2,w,h); first=false; } prog(95); const blob=doc.output(‘blob’); const url=URL.createObjectURL(blob); prog(100); showRes(url,‘compressed.pdf’,`${(files[0].size/1024).toFixed(0)} KB → ${(blob.size/1024).toFixed(0)} KB`); toast(‘Compressed!’); }
+async function convertImg(){ if(!files.length)throw new Error(‘Select image(s)’); const mimes={JPG:‘image/jpeg’,PNG:‘image/png’,WebP:‘image/webp’,BMP:‘image/bmp’}; const exts={JPG:‘jpg’,PNG:‘png’,WebP:‘webp’,BMP:‘bmp’}; const mime=mimes[fmt]||‘image/png’; const ext=exts[fmt]||‘png’; for(let i=0;i<files.length;i++){ prog(10+(i/files.length)*85,`Converting ${files[i].name}...`); const du=await rUrl(files[i]); const img=new Image(); img.src=du; await new Promise(r=>img.onload=r); const cv=document.createElement(‘canvas’); cv.width=img.width; cv.height=img.height; cv.getContext(‘2d’).drawImage(img,0,0); const url=cv.toDataURL(mime,0.92); const base=files[i].name.replace(/.\w+$/,’’); if(i===0){prog(100);showRes(url,`${base}.${ext}`,`Converted ${files.length} file(s) to ${fmt}`);}else{const a=document.createElement(‘a’);a.href=url;a.download=`${base}.${ext}`;a.click();} } toast(`Converted to ${fmt}!`); }
+async function resizeImg(){ if(!files[0])throw new Error(‘Select an image’); const w=parseInt(document.getElementById(‘rW’).value); const h=parseInt(document.getElementById(‘rH’).value); if(!w&&!h)throw new Error(‘Enter a width or height’); prog(30,‘Resizing…’); const du=await rUrl(files[0]); const img=new Image(); img.src=du; await new Promise(r=>img.onload=r); const ratio=img.width/img.height; const fw=w||Math.round(h*ratio); const fh=h||Math.round(w/ratio); const cv=document.createElement(‘canvas’); cv.width=fw; cv.height=fh; cv.getContext(‘2d’).drawImage(img,0,0,fw,fh); prog(90); const url=cv.toDataURL(‘image/png’); prog(100); showRes(url,files[0].name.replace(/.\w+$/,`_${fw}x${fh}.png`),`Resized to ${fw} × ${fh} px`); toast(‘Resized!’); }
+async function compressImg(){ if(!files.length)throw new Error(‘Select image(s)’); const map={‘JPG high quality’:[0.92,‘jpg’],‘JPG medium’:[0.65,‘jpg’],‘JPG small’:[0.3,‘jpg’],‘PNG’:[1,‘png’]}; const [q,ext]=map[fmt]||[0.7,‘jpg’]; const mime=ext===‘png’?‘image/png’:‘image/jpeg’; for(let i=0;i<files.length;i++){ prog(10+(i/files.length)*85,`Compressing...`); const du=await rUrl(files[i]); const img=new Image(); img.src=du; await new Promise(r=>img.onload=r); const cv=document.createElement(‘canvas’); cv.width=img.width; cv.height=img.height; cv.getContext(‘2d’).drawImage(img,0,0); const url=cv.toDataURL(mime,q); const base=files[i].name.replace(/.\w+$/,’’); if(i===0){prog(100);showRes(url,`${base}_compressed.${ext}`);}else{const a=document.createElement(‘a’);a.href=url;a.download=`${base}_compressed.${ext}`;a.click();} } toast(‘Compressed!’); }
+async function rotateImg(){ if(!files[0])throw new Error(‘Select an image’); prog(30,‘Transforming…’); const du=await rUrl(files[0]); const img=new Image(); img.src=du; await new Promise(r=>img.onload=r); const cv=document.createElement(‘canvas’); const ctx=cv.getContext(‘2d’); const op=fmt||‘Rotate 90°’; if(op.includes(‘90’)||op.includes(‘270’)){cv.width=img.height;cv.height=img.width;}else{cv.width=img.width;cv.height=img.height;} ctx.translate(cv.width/2,cv.height/2); if(op===‘Rotate 90°’)ctx.rotate(Math.PI/2); else if(op===‘Rotate 180°’)ctx.rotate(Math.PI); else if(op===‘Rotate 270°’)ctx.rotate(-Math.PI/2); else if(op===‘Flip Horizontal’)ctx.scale(-1,1); else if(op===‘Flip Vertical’)ctx.scale(1,-1); ctx.drawImage(img,-img.width/2,-img.height/2); prog(90); const url=cv.toDataURL(‘image/png’); prog(100); showRes(url,files[0].name.replace(/.\w+$/,’’)+’_transformed.png’,op+’ applied’); toast(‘Done!’); }
+async function bwImg(){ if(!files.length)throw new Error(‘Select image(s)’); const bw=fmt===‘Black & White’; for(let i=0;i<files.length;i++){ prog(10+(i/files.length)*85,‘Processing…’); const du=await rUrl(files[i]); const img=new Image(); img.src=du; await new Promise(r=>img.onload=r); const cv=document.createElement(‘canvas’); cv.width=img.width; cv.height=img.height; const ctx=cv.getContext(‘2d’); ctx.drawImage(img,0,0); const id=ctx.getImageData(0,0,cv.width,cv.height); const d=id.data; for(let j=0;j<d.length;j+=4){const g=0.299*d[j]+0.587*d[j+1]+0.114*d[j+2];const v=bw?(g>128?255:0):g;d[j]=d[j+1]=d[j+2]=v;} ctx.putImageData(id,0,0); const url=cv.toDataURL(‘image/png’); const base=files[i].name.replace(/.\w+$/,’’); if(i===0){prog(100);showRes(url,`${base}_bw.png`);}else{const a=document.createElement(‘a’);a.href=url;a.download=`${base}_bw.png`;a.click();} } toast(‘Done!’); }
+async function svgConvert(){ if(!files.length)throw new Error(‘Select SVG file(s)’); const mime=fmt===‘JPG’?‘image/jpeg’:‘image/png’; const ext=fmt===‘JPG’?‘jpg’:‘png’; for(let i=0;i<files.length;i++){ prog(10+(i/files.length)*85,‘Converting…’); const txt=await rTxt(files[i]); const blob=new Blob([txt],{type:‘image/svg+xml’}); const url=URL.createObjectURL(blob); const img=new Image(); img.src=url; await new Promise(r=>img.onload=r); const cv=document.createElement(‘canvas’); const sc=2; cv.width=(img.width||800)*sc; cv.height=(img.height||600)*sc; const ctx=cv.getContext(‘2d’); if(mime===‘image/jpeg’){ctx.fillStyle=’#fff’;ctx.fillRect(0,0,cv.width,cv.height);} ctx.scale(sc,sc); ctx.drawImage(img,0,0); const out=cv.toDataURL(mime,0.95); const base=files[i].name.replace(’.svg’,’’); if(i===0){prog(100);showRes(out,`${base}.${ext}`);}else{const a=document.createElement(‘a’);a.href=out;a.download=`${base}.${ext}`;a.click();} } toast(`SVG → ${fmt}!`); }
+async function txtToPdf(){ if(!files[0])throw new Error(‘Select a text file’); prog(20,‘Reading…’); const txt=await rTxt(files[0]); prog(50,‘Building PDF…’); const doc=makePdf(); doc.setFontSize(11); const lines=doc.splitTextToSize(txt,180); let y=20; lines.forEach(l=>{if(y>280){doc.addPage();y=20;}doc.text(l,15,y);y+=6;}); prog(95); const url=URL.createObjectURL(doc.output(‘blob’)); prog(100); showRes(url,files[0].name.replace(/.\w+$/,’’)+’.pdf’); toast(‘Converted!’); }
+async function mdToPdf(){ if(!files[0])throw new Error(‘Select a Markdown file’); prog(20,‘Reading…’); const txt=await rTxt(files[0]); const plain=txt.replace(/^#{1,6}\s+(.+)/gm,’$1\n’).replace(/**(.+?)**/g,’$1’).replace(/*(.+?)*/g,’$1’).replace(/`(.+?)`/g,’$1’).replace(/[(.+?)](.+?)/g,’$1’).replace(/^[-*]\s+/gm,’• ‘); prog(50,‘Building PDF…’); const doc=makePdf(); doc.setFontSize(11); const lines=doc.splitTextToSize(plain,180); let y=20; lines.forEach(l=>{if(y>280){doc.addPage();y=20;}doc.text(l,15,y);y+=6;}); prog(95); const url=URL.createObjectURL(doc.output(‘blob’)); prog(100); showRes(url,files[0].name.replace(/.\w+$/,’’)+’.pdf’); toast(‘Converted!’); }
+async function htmlToPdf(){ const html=document.getElementById(‘hIn’)?.value; if(!html?.trim())throw new Error(‘Please paste some HTML code’); prog(30,‘Rendering…’); const div=document.createElement(‘div’); div.innerHTML=html; const txt=div.innerText||div.textContent||’’; prog(60,‘Building PDF…’); const doc=makePdf(); doc.setFontSize(11); const lines=doc.splitTextToSize(txt,180); let y=20; lines.forEach(l=>{if(y>280){doc.addPage();y=20;}doc.text(l,15,y);y+=6;}); prog(95); const url=URL.createObjectURL(doc.output(‘blob’)); prog(100); showRes(url,‘converted.pdf’); toast(‘Converted!’); }
+</script>
+
+</body>
+</html>
