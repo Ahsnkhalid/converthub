@@ -186,36 +186,36 @@ nav .nav-btn:not(.primary) { display: none; }
   <div class="tool-sec" id="pdf-sec" data-cat="pdf">
     <div class="sec-label">PDF Tools</div>
     <div class="grid">
-      <div class="card" style="--c:#e84545;--bg:#ffeaea" onclick="open('pdf-to-word')"><div class="card-icon">📄</div><div class="card-name">PDF to Word</div><div class="card-desc">Extract text from PDF into an editable document</div></div>
-      <div class="card" style="--c:#2563eb;--bg:#eff6ff" onclick="open('word-to-pdf')"><div class="card-icon">📝</div><div class="card-name">Word to PDF</div><div class="card-desc">Convert Word or text files to PDF format</div></div>
-      <div class="card" style="--c:#16a34a;--bg:#f0fdf4" onclick="open('pdf-to-excel')"><div class="card-icon">📊</div><div class="card-name">PDF to Excel</div><div class="card-desc">Extract PDF data into a CSV spreadsheet</div></div>
-      <div class="card" style="--c:#d97706;--bg:#fffbeb" onclick="open('excel-to-pdf')"><div class="card-icon">🗂️</div><div class="card-name">Excel to PDF</div><div class="card-desc">Convert CSV or spreadsheet files to PDF</div></div>
-      <div class="card" style="--c:#7c3aed;--bg:#f5f3ff" onclick="open('pdf-to-ppt')"><div class="card-icon">🖼️</div><div class="card-name">PDF to Images</div><div class="card-desc">Export each PDF page as a PNG image</div></div>
-      <div class="card" style="--c:#db2777;--bg:#fdf2f8" onclick="open('imgs-to-pdf')"><div class="card-icon">📑</div><div class="card-name">Images to PDF</div><div class="card-desc">Combine multiple images into one PDF</div></div>
-      <div class="card" style="--c:#0891b2;--bg:#ecfeff" onclick="open('merge-pdf')"><div class="card-icon">📎</div><div class="card-name">Merge PDFs</div><div class="card-desc">Combine multiple PDF files into one</div></div>
-      <div class="card" style="--c:#65a30d;--bg:#f7fee7" onclick="open('compress-pdf')"><div class="card-icon">🗜️</div><div class="card-name">Compress PDF</div><div class="card-desc">Reduce PDF file size for easy sharing</div></div>
+      <div class="card" style="--c:#e84545;--bg:#ffeaea" onclick="openTool('pdf-to-word')"><div class="card-icon">📄</div><div class="card-name">PDF to Word</div><div class="card-desc">Extract text from PDF into an editable document</div></div>
+      <div class="card" style="--c:#2563eb;--bg:#eff6ff" onclick="openTool('word-to-pdf')"><div class="card-icon">📝</div><div class="card-name">Word to PDF</div><div class="card-desc">Convert Word or text files to PDF format</div></div>
+      <div class="card" style="--c:#16a34a;--bg:#f0fdf4" onclick="openTool('pdf-to-excel')"><div class="card-icon">📊</div><div class="card-name">PDF to Excel</div><div class="card-desc">Extract PDF data into a CSV spreadsheet</div></div>
+      <div class="card" style="--c:#d97706;--bg:#fffbeb" onclick="openTool('excel-to-pdf')"><div class="card-icon">🗂️</div><div class="card-name">Excel to PDF</div><div class="card-desc">Convert CSV or spreadsheet files to PDF</div></div>
+      <div class="card" style="--c:#7c3aed;--bg:#f5f3ff" onclick="openTool('pdf-to-ppt')"><div class="card-icon">🖼️</div><div class="card-name">PDF to Images</div><div class="card-desc">Export each PDF page as a PNG image</div></div>
+      <div class="card" style="--c:#db2777;--bg:#fdf2f8" onclick="openTool('imgs-to-pdf')"><div class="card-icon">📑</div><div class="card-name">Images to PDF</div><div class="card-desc">Combine multiple images into one PDF</div></div>
+      <div class="card" style="--c:#0891b2;--bg:#ecfeff" onclick="openTool('merge-pdf')"><div class="card-icon">📎</div><div class="card-name">Merge PDFs</div><div class="card-desc">Combine multiple PDF files into one</div></div>
+      <div class="card" style="--c:#65a30d;--bg:#f7fee7" onclick="openTool('compress-pdf')"><div class="card-icon">🗜️</div><div class="card-name">Compress PDF</div><div class="card-desc">Reduce PDF file size for easy sharing</div></div>
     </div>
   </div>
 
   <div class="tool-sec" id="img-sec" data-cat="image">
     <div class="sec-label">Image Tools</div>
     <div class="grid">
-      <div class="card" style="--c:#d97706;--bg:#fffbeb" onclick="open('img-convert')"><div class="card-icon">🔄</div><div class="card-name">Convert Image</div><div class="card-desc">JPG, PNG, WebP, BMP — convert any format</div></div>
-      <div class="card" style="--c:#7c3aed;--bg:#f5f3ff" onclick="open('img-resize')"><div class="card-icon">↔️</div><div class="card-name">Resize Image</div><div class="card-desc">Resize to exact pixel dimensions</div></div>
-      <div class="card" style="--c:#16a34a;--bg:#f0fdf4" onclick="open('img-compress')"><div class="card-icon">🗜️</div><div class="card-name">Compress Image</div><div class="card-desc">Reduce file size, keep the quality</div></div>
-      <div class="card" style="--c:#db2777;--bg:#fdf2f8" onclick="open('img-rotate')"><div class="card-icon">✂️</div><div class="card-name">Rotate & Flip</div><div class="card-desc">Rotate 90°/180° or flip horizontally</div></div>
-      <div class="card" style="--c:#374151;--bg:#f3f4f6" onclick="open('img-bw')"><div class="card-icon">⚫</div><div class="card-name">Grayscale / B&W</div><div class="card-desc">Convert colour photo to grayscale or B&W</div></div>
-      <div class="card" style="--c:#0891b2;--bg:#ecfeff" onclick="open('svg-png')"><div class="card-icon">📐</div><div class="card-name">SVG to PNG/JPG</div><div class="card-desc">Rasterize SVG vector files to PNG or JPG</div></div>
+      <div class="card" style="--c:#d97706;--bg:#fffbeb" onclick="openTool('img-convert')"><div class="card-icon">🔄</div><div class="card-name">Convert Image</div><div class="card-desc">JPG, PNG, WebP, BMP — convert any format</div></div>
+      <div class="card" style="--c:#7c3aed;--bg:#f5f3ff" onclick="openTool('img-resize')"><div class="card-icon">↔️</div><div class="card-name">Resize Image</div><div class="card-desc">Resize to exact pixel dimensions</div></div>
+      <div class="card" style="--c:#16a34a;--bg:#f0fdf4" onclick="openTool('img-compress')"><div class="card-icon">🗜️</div><div class="card-name">Compress Image</div><div class="card-desc">Reduce file size, keep the quality</div></div>
+      <div class="card" style="--c:#db2777;--bg:#fdf2f8" onclick="openTool('img-rotate')"><div class="card-icon">✂️</div><div class="card-name">Rotate & Flip</div><div class="card-desc">Rotate 90°/180° or flip horizontally</div></div>
+      <div class="card" style="--c:#374151;--bg:#f3f4f6" onclick="openTool('img-bw')"><div class="card-icon">⚫</div><div class="card-name">Grayscale / B&W</div><div class="card-desc">Convert colour photo to grayscale or B&W</div></div>
+      <div class="card" style="--c:#0891b2;--bg:#ecfeff" onclick="openTool('svg-png')"><div class="card-icon">📐</div><div class="card-name">SVG to PNG/JPG</div><div class="card-desc">Rasterize SVG vector files to PNG or JPG</div></div>
     </div>
   </div>
 
   <div class="tool-sec" id="doc-sec" data-cat="docs">
     <div class="sec-label">Document Tools</div>
     <div class="grid">
-      <div class="card" style="--c:#e84545;--bg:#ffeaea" onclick="open('txt-pdf')"><div class="card-icon">📝</div><div class="card-name">Text to PDF</div><div class="card-desc">Convert plain .txt files to PDF</div></div>
-      <div class="card" style="--c:#2563eb;--bg:#eff6ff" onclick="open('csv-pdf')"><div class="card-icon">📋</div><div class="card-name">CSV to PDF</div><div class="card-desc">Render CSV data as a table in PDF</div></div>
-      <div class="card" style="--c:#16a34a;--bg:#f0fdf4" onclick="open('md-pdf')"><div class="card-icon">📑</div><div class="card-name">Markdown to PDF</div><div class="card-desc">Render Markdown files as formatted PDF</div></div>
-      <div class="card" style="--c:#d97706;--bg:#fffbeb" onclick="open('html-pdf')"><div class="card-icon">🌐</div><div class="card-name">HTML to PDF</div><div class="card-desc">Paste HTML code and download as PDF</div></div>
+      <div class="card" style="--c:#e84545;--bg:#ffeaea" onclick="openTool('txt-pdf')"><div class="card-icon">📝</div><div class="card-name">Text to PDF</div><div class="card-desc">Convert plain .txt files to PDF</div></div>
+      <div class="card" style="--c:#2563eb;--bg:#eff6ff" onclick="openTool('csv-pdf')"><div class="card-icon">📋</div><div class="card-name">CSV to PDF</div><div class="card-desc">Render CSV data as a table in PDF</div></div>
+      <div class="card" style="--c:#16a34a;--bg:#f0fdf4" onclick="openTool('md-pdf')"><div class="card-icon">📑</div><div class="card-name">Markdown to PDF</div><div class="card-desc">Render Markdown files as formatted PDF</div></div>
+      <div class="card" style="--c:#d97706;--bg:#fffbeb" onclick="openTool('html-pdf')"><div class="card-icon">🌐</div><div class="card-name">HTML to PDF</div><div class="card-desc">Paste HTML code and download as PDF</div></div>
     </div>
   </div>
 
@@ -287,7 +287,7 @@ function filter(cat, btn){
   document.querySelectorAll('.tool-sec').forEach(s=>{ s.style.display=(cat==='all'||s.dataset.cat===cat)?'':'none'; });
 }
 
-function open(id){
+function openTool(id){
   tid=id; files=[]; const t=T[id];
   fmt=t.fmts?t.fmts[0]:'';
   const mi=document.getElementById('mIco'); mi.textContent=t.ico; mi.style.background=t.bg;
